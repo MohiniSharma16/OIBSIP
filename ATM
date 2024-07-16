@@ -1,0 +1,126 @@
+import java.util.Scanner;
+
+class ATM {
+    private float balance; // Encapsulate balance for better data protection
+    private int pin = 5665;
+    private int transactionCount = 0; 
+    private StringBuilder transactionHistory = new StringBuilder(); // Use StringBuilder for efficient string concatenation
+
+    private Scanner scanner = new Scanner(System.in);
+
+    public void checkPin() {
+        System.out.println("Enter your login pin:");
+        int enteredPin = scanner.nextInt();
+
+        if (enteredPin == pin) {
+            System.out.println("You logged in successfully!");
+            menu();
+        } else {
+            System.out.println("Invalid pin. Please try again.");
+            checkPin(); 
+        }
+    }
+
+    public void menu() {
+        System.out.println("Enter your choice:");
+        System.out.println("1. Transaction History");
+        System.out.println("2. Withdraw Money");
+        System.out.println("3. Deposit Money");
+        System.out.println("4. Transfer Money");
+        System.out.println("5. Check Balance");
+        System.out.println("6. Quit");
+
+        while (true) {
+            int option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    transactionHistory();
+                    break;
+                case 2:
+                    withdrawMoney();
+                    break;
+                case 3:
+                    depositMoney();
+                    break;
+                case 4:
+                    transferMoney();
+                    break;
+                case 5:
+                    checkBalance();
+                    break;
+                case 6:
+                    System.out.println("Exited Successfully!");
+                    System.exit(0); 
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        }
+    }
+
+    public void transactionHistory() {
+        if (transactionCount == 0) {
+            System.out.println("No transactions have been performed yet.");
+        } else {
+            System.out.println("Transaction History:\n" + transactionHistory.toString());
+        }
+        menu();
+    }
+
+    public void withdrawMoney() {
+        System.out.println("Enter amount to withdraw:");
+        float amount = scanner.nextFloat();
+
+        if (amount > balance) {
+            System.out.println("Insufficient Funds.");
+        } else {
+            balance -= amount;
+            System.out.println("Money withdrawn successfully!");
+            updateTransactionHistory("Withdraw", amount); // Add withdrawal to transaction history
+        }
+        menu();
+    }
+
+    public void depositMoney() {
+        System.out.println("Enter amount to deposit:");
+        float amount = scanner.nextFloat();
+
+        balance += amount;
+        System.out.println("Amount deposited successfully!");
+        updateTransactionHistory("Deposit", amount); // Add deposit to transaction history
+        menu();
+    }
+
+    public void transferMoney() {
+        Scanner scanner = new Scanner(System.in); 
+        System.out.println("Enter recipient name:");
+        String recipient = scanner.nextLine();
+        System.out.println("Enter the amount to transfer:");
+        float amount = scanner.nextFloat();
+
+        if (amount > balance) {
+            System.out.println("Insufficient Funds.");
+        } else {
+            balance -= amount;
+            System.out.println("Amount successfully transferred to " + recipient);
+            updateTransactionHistory("Transfer to " + recipient, amount); // Update transaction history with recipient
+        }
+        menu();
+    }
+
+    public void checkBalance() {
+        System.out.println("Your current balance: " + balance);
+        menu();
+    }
+
+    private void updateTransactionHistory(String action, float amount) {
+        transactionCount++;
+        transactionHistory.append(action + ": " + amount + " Rs\n");
+    }
+}
+
+public class ATMINTERFACE {
+    public static void main(String[] args) {
+        ATM atm = new ATM(); 
+        atm.checkPin();
+    }
+}
